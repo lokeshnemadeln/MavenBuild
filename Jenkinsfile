@@ -1,5 +1,13 @@
-node('') {
-	stage ('checkout code'){
+pipeline {
+    agent any
+
+    tools {
+    
+        maven "MAVEN_HOME"
+    }
+
+    stages {
+        stage('Build')stage ('checkout code'){
 		checkout scm
 	}
 	
@@ -30,4 +38,14 @@ node('') {
 		      to: "build-alerts@example.com"
 		    )
 	}
+
+    post {
+            
+            success {
+                    junit '**/target/surefire-reports/TEST-*.xml'
+                    archiveArtifacts 'target/*.jar'
+                }
+            }
+        }
+    }
 }
